@@ -1,15 +1,34 @@
-version: '1'
+version: "3.9"
 services:
   airlines:
-    build: 
+    build:
       context: ./airlines
     ports:
       - "8080:8080"
+    environment:
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=airlines,service.namespace=pov-sim,deployment.environment=dev
+      - OTEL_SERVICE_NAME=airlines
+      - OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-2.grafana.net/otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_HEADERS = <REDACTED>
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_TRACES_EXPORTER=otlp
   flights:
-    build: 
+    build:
       context: ./flights
     ports:
       - "5001:5001"
+    environment:
+      - OTEL_RESOURCE_ATTRIBUTES=service.name=flights,service.namespace=pov-sim,deployment.environment=dev
+      - OTEL_SERVICE_NAME=flights
+      - OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-2.grafana.net/otlp
+      - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
+      - OTEL_EXPORTER_OTLP_HEADERS = <REDACTED>
+      - OTEL_METRICS_EXPORTER=otlp
+      - OTEL_LOGS_EXPORTER=otlp
+      - OTEL_TRACES_EXPORTER=otlp
+      - OTEL_METRIC_EXPORT_INTERVAL=5000 # so we don't have to wait 60s for metrics
   frontend:
     build: 
       context: ./frontend
