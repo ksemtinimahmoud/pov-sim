@@ -2,6 +2,24 @@ from flasgger import Swagger
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from utils import get_random_int
+import pyroscope
+
+pyroscope.configure(
+  application_name = "flights",
+  server_address   = "https://profiles-prod-002.grafana.net",
+  basic_auth_username = "1370456",
+  basic_auth_password = "<REDACTED>",
+  sample_rate         = 100, # default is 100
+  detect_subprocesses = False, # detect subprocesses started by the main process; default is False
+  oncpu               = True, # report cpu time only; default is True
+  gil_only            = True, # only include traces for threads that are holding on to the Global Interpreter Lock; default is True
+  enable_logging      = True, # does enable logging facility; default is False
+    tags                = {
+        "env": "dev",
+        "namespace":"pov-sim",
+        "service_name": "flights",
+    }
+)
 
 app = Flask(__name__)
 Swagger(app)

@@ -6,14 +6,25 @@ services:
     ports:
       - "8080:8080"
     environment:
+       # OpenTelemetry config
       - OTEL_RESOURCE_ATTRIBUTES=service.name=airlines,service.namespace=pov-sim,deployment.environment=dev
       - OTEL_SERVICE_NAME=airlines
       - OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-2.grafana.net/otlp
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-      - OTEL_EXPORTER_OTLP_HEADERS = <REDACTED>
+      - OTEL_EXPORTER_OTLP_HEADERS=<REDACTED>
       - OTEL_METRICS_EXPORTER=otlp
       - OTEL_LOGS_EXPORTER=otlp
       - OTEL_TRACES_EXPORTER=otlp
+      # Pyroscope config
+      - PYROSCOPE_APPLICATION_NAME=airlines
+      - PYROSCOPE_FORMAT=jfr
+      - PYROSCOPE_SERVER_ADDRESS=https://profiles-prod-002.grafana.net
+      - PYROSCOPE_BASIC_AUTH_USER=1370456
+      - PYROSCOPE_BASIC_AUTH_PASSWORD=<REDACTED>
+#      - PYROSCOPE_PROFILING_INTERVAL=10ms
+      - PYROSCOPE_PROFILER_LOCK=10ms
+      - PYROSCOPE_UPLOAD_INTERVAL=15s
+      - PYROSCOPE_LABELS=env=dev,namespace=pov-sim,service_name=airlines
   flights:
     build:
       context: ./flights
@@ -24,11 +35,12 @@ services:
       - OTEL_SERVICE_NAME=flights
       - OTEL_EXPORTER_OTLP_ENDPOINT=https://otlp-gateway-prod-eu-west-2.grafana.net/otlp
       - OTEL_EXPORTER_OTLP_PROTOCOL=http/protobuf
-      - OTEL_EXPORTER_OTLP_HEADERS = <REDACTED>
+      - OTEL_EXPORTER_OTLP_HEADERS=<REDACTED>
       - OTEL_METRICS_EXPORTER=otlp
       - OTEL_LOGS_EXPORTER=otlp
       - OTEL_TRACES_EXPORTER=otlp
       - OTEL_METRIC_EXPORT_INTERVAL=5000 # so we don't have to wait 60s for metrics
+      - OTEL_PYTHON_LOGGING_AUTO_INSTRUMENTATION_ENABLED=true
   frontend:
     build: 
       context: ./frontend

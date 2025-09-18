@@ -16,6 +16,8 @@ ENV OPENTELEMETRY_DISTRO_VERSION=0.54b0
 RUN pip install --no-cache-dir "opentelemetry-distro[otlp]==$OPENTELEMETRY_DISTRO_VERSION"
 RUN opentelemetry-bootstrap -a install
 
+RUN pip install pyroscope-io
+
 
 # Copy the rest of your application code into the container
 COPY . .
